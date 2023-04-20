@@ -61,3 +61,14 @@ spec:
 
 ### Network observability
 
+See the list of all connections that happen across cluster.
+
+```bash
+kubectl exec -it busybox sh
+curl google.com
+```
+
+```bash
+kubectl apply -f https://raw.githubusercontent.com/cilium/tetragon/main/examples/tracingpolicy/tcp-connect.yaml
+```
+
