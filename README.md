@@ -215,4 +215,9 @@ spec:
        - action: Sigkill
 ```
 
+## References
+
+https://github.com/cilium/tetragon
+https://isovalent.com/blog
+https://b-nova.com/en/home/content/strengthen-your-system-with-tetragons-ebpf-based-security-observability-and-runtime-enforcement-capabilities
 
