@@ -77,6 +77,12 @@ kubectl exec -it busybox sh
 wget -qO- google.com
 ```
 
+### Tracing policy for write functions
+
+```bash
+kubectl apply -f https://github.com/cilium/tetragon/raw/main/examples/tracingpolicy/write.yaml
+```
+
 ### Actions available
 
 https://github.com/cilium/tetragon/blob/main/docs/content/en/docs/reference/tracing-policy.md#actions-filter
@@ -99,10 +105,9 @@ Don't allow creation of files in `/etc/kubernetes/manifests`.
 apiVersion: cilium.io/v1alpha1
 kind: TracingPolicy
 metadata:
-  name: "prevent-file-write"
+  name: "deny-tmp-forbidden-write"
 spec:
   kprobes:
-  # create entry for matching fd in a BPF map
   - call: "fd_install"
     syscall: false
     return: false
@@ -122,12 +127,11 @@ spec:
       - index: 1
         operator: "Prefix"
         values:
-        - "/etc/kubernetes/manifests"
+        - "/tmp/forbidden/"
       matchActions:
       - action: FollowFD
         argFd: 0
         argName: 1
-  # delete matching fd entry from BPF map
   - call: "__x64_sys_close"
     syscall: true
     args:
@@ -138,7 +142,6 @@ spec:
       - action: UnfollowFD
         argFd: 0
         argName: 0
-  # read syscall is executed first
   - call: "__x64_sys_read"
     syscall: true
     args:
@@ -149,7 +152,6 @@ spec:
       returnCopy: true
     - index: 2
       type: "size_t"
-  # look for write syscall in the matching directory & kill the operation with Sigkill
   - call: "__x64_sys_write"
     syscall: true
     args:
@@ -166,5 +168,51 @@ spec:
 ```
 
 Create another policy to kill privileged pod. This can be done with kyverno too but it creates a webhook & it might break many things & it looks only for changes to kubernetes things. what if someone creates a docker container in privileged mode?
+
+### List of syscalls made by process
+
+Use strace. For ex,
+
+```bash
+strace ls
+```
+
+Block c2 connection
+
+```
+apiVersion: cilium.io/v1alpha1
+kind: TracingPolicy
+metadata:
+  name: "deny-c2-server-connection"
+spec:
+  kprobes:
+  - call: "__x64_connect"
+    syscall: true
+    args:
+      - index: 0
+        type: "sock"
+      - index: 1
+        type: "sock"
+    selectors:
+    - matchPIDs:
+      - operator: In
+        followForks: false
+        isNamespacePID: true
+        values:
+        - 0
+      - operator: NotIn
+        followForks: true
+        isNamespacePID: true
+        values:
+        - 1
+      matchArgs:
+      # match on 34.116.205.187:443
+      - index: 1
+        operator: "Equal"
+        values:
+        - "dip: 34.116.205.187, dport:443"
+      matchActions:
+       - action: Sigkill
+```
 
 
