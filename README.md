@@ -177,47 +177,9 @@ Use strace. For ex,
 strace ls
 ```
 
-Block c2 connection
-
-```
-apiVersion: cilium.io/v1alpha1
-kind: TracingPolicy
-metadata:
-  name: "deny-c2-server-connection"
-spec:
-  kprobes:
-  - call: "__x64_connect"
-    syscall: true
-    args:
-      - index: 0
-        type: "sock"
-      - index: 1
-        type: "sock"
-    selectors:
-    - matchPIDs:
-      - operator: In
-        followForks: false
-        isNamespacePID: true
-        values:
-        - 0
-      - operator: NotIn
-        followForks: true
-        isNamespacePID: true
-        values:
-        - 1
-      matchArgs:
-      # match on 34.116.205.187:443
-      - index: 1
-        operator: "Equal"
-        values:
-        - "dip: 34.116.205.187, dport:443"
-      matchActions:
-       - action: Sigkill
-```
-
 ## References
 
-https://github.com/cilium/tetragon
-https://isovalent.com/blog
-https://b-nova.com/en/home/content/strengthen-your-system-with-tetragons-ebpf-based-security-observability-and-runtime-enforcement-capabilities
+* https://github.com/cilium/tetragon
+* https://isovalent.com/blog
+* https://b-nova.com/en/home/content/strengthen-your-system-with-tetragons-ebpf-based-security-observability-and-runtime-enforcement-capabilities
 
