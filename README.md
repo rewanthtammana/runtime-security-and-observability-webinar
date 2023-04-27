@@ -6,6 +6,36 @@ https://rewanthtammana.com/
 
 ## Notes
 
+## Kubernetes API server bypass attack
+
+Install pre-requisites & start a cluster
+
+```bash
+curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.18.0/kind-linux-amd64
+chmod +x ./kind
+sudo mv ./kind /usr/local/bin/kind
+sudo apt update
+sudo apt -y install docker.io vim net-tools
+docker pull kindest/node:v1.26.3
+snap install kubectl --classic
+kind create cluster
+```
+
+
+```bash
+apiVersion: v1
+kind: Pod
+metadata:
+  name: busyboxxx
+spec:
+  containers:
+  - name: busybox
+    image: busybox
+    command: [ wget, -qO-, 172.30.1.2:8000/zzyyxxabcd ]
+    securityContext:
+      privileged: true
+```
+
 ### Install tetragon
 
 ```bash
