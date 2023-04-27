@@ -203,6 +203,10 @@ spec:
 
 Create another policy to kill privileged pod. This can be done with kyverno too but it creates a webhook & it might break many things & it looks only for changes to kubernetes things. what if someone creates a docker container in privileged mode?
 
+### Bypass above check
+
+The list of syscalls are triggered when `vim` tries to make changes to the system. If we use some other method like, `echo abcd > /tmp/forbidden/hello`. It will bypass the above validation.
+
 ### List of syscalls made by process
 
 Use strace. For ex,
