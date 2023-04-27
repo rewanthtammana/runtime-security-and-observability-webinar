@@ -26,12 +26,12 @@ kind create cluster
 apiVersion: v1
 kind: Pod
 metadata:
-  name: busyboxxx
+  name: busybox-test
 spec:
   containers:
   - name: busybox
     image: busybox
-    command: [ wget, -qO-, 172.30.1.2:8000/zzyyxxabcd ]
+    command: [ wget, -qO-, 172.30.1.2:8000/privileged ]
     securityContext:
       privileged: true
 ```
