@@ -17,7 +17,7 @@ sudo mv ./kind /usr/local/bin/kind
 sudo apt update
 sudo apt -y install docker.io vim net-tools bpfcc-tools linux-headers-$(uname -r)
 docker pull kindest/node:v1.26.3
-snap install kubectl --classic
+snap install kubectl helm --classic
 kind create cluster
 ```
 
