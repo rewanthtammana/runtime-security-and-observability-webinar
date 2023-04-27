@@ -68,10 +68,14 @@ kubectl run nginx --image nginx
 
 ### List capabilities
 
-Edit the tetragon configuration & set `enable-process-cred` to `true`.
-
 ```bash
 kubectl edit cm -n kube-system tetragon-config
+```
+
+Edit the tetragon configuration & set `enable-process-cred` to `true`.
+
+
+```bash
 kubectl rollout restart -n kube-system ds/tetragon
 ```
 
@@ -129,7 +133,7 @@ https://kubernetes.io/docs/concepts/security/api-server-bypass-risks/#static-pod
 
 How to prevent this attack?
 
-Don't allow creation of files in `/etc/kubernetes/manifests`.
+Don't allow creation of files in `/etc/kubernetes/manifests`. For example, let's test with `/tmp/forbidden` directory.
 
 ```bash
 apiVersion: cilium.io/v1alpha1
