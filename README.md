@@ -15,7 +15,7 @@ curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.18.0/kind-linux-amd64
 chmod +x ./kind
 sudo mv ./kind /usr/local/bin/kind
 sudo apt update
-sudo apt -y install docker.io vim net-tools
+sudo apt -y install docker.io vim net-tools bpfcc-tools
 docker pull kindest/node:v1.26.3
 snap install kubectl --classic
 kind create cluster
