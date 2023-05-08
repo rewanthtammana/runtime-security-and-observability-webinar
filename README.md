@@ -1,4 +1,4 @@
-# runtime-security-and-observability-workshop
+# runtime-security-and-observability-webinar
 
 ## About me
 
